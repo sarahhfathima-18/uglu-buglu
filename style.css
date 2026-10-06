@@ -1496,3 +1496,51 @@ footer {
     filter: blur(80px);
   }
 }
+/* =========================
+   CLOSER / TOGETHER ANIMATION
+   ========================= */
+
+.hero-stage.closer .character-spidey {
+  transform: translateX(95px) translateY(-5px) rotate(-4deg);
+}
+
+.hero-stage.closer .character-batman {
+  transform: translateX(-95px) translateY(-5px) rotate(4deg);
+}
+
+.hero-stage.closer .friendship-heart {
+  transform: translate(-50%, -50%) scale(1.25);
+  opacity: 1;
+}
+
+.hero-stage.closer .character {
+  transition:
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.friendship-heart {
+  transition:
+    transform 0.8s ease,
+    opacity 0.8s ease;
+}
+/* FORCE SARA + UGLU BUGLU TO COME CLOSER */
+
+.hero-stage {
+  position: relative;
+}
+
+.hero-stage .character {
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.hero-stage.closer .character-spidey {
+  transform: translateX(180px) !important;
+}
+
+.hero-stage.closer .character-batman {
+  transform: translateX(-180px) !important;
+}
+
+.hero-stage.closer .friendship-heart {
+  transform: translate(-50%, -50%) scale(1.4) !important;
+}
