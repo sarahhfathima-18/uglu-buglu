@@ -1,137 +1,247 @@
-// =========================
-// OPEN WEBSITE
-// =========================
+/* =========================================================
+   UGLU BUGLUU — INTERACTIONS
+   ========================================================= */
 
-const openButton = document.getElementById("openButton");
-const opening = document.getElementById("opening");
-const mainContent = document.getElementById("mainContent");
+document.addEventListener("DOMContentLoaded", () => {
 
-openButton.addEventListener("click", () => {
-  opening.style.opacity = "0";
-  opening.style.transform = "scale(0.98)";
+    /* =====================================================
+       OPENING → MAIN WEBSITE
+       ===================================================== */
 
-  setTimeout(() => {
-    opening.style.display = "none";
-    mainContent.classList.remove("hidden");
+    const enterBtn = document.getElementById("enterBtn");
+    const opening = document.getElementById("opening");
+    const mainContent = document.getElementById("mainContent");
 
-    revealElements();
-  }, 700);
-});
+    enterBtn.addEventListener("click", () => {
+
+        opening.style.opacity = "0";
+        opening.style.transform = "scale(1.04)";
+
+        setTimeout(() => {
+
+            opening.classList.add("hidden");
+            mainContent.classList.remove("hidden");
+
+            window.scrollTo({
+                top: 0,
+                behavior: "instant"
+            });
+
+        }, 700);
+
+    });
 
 
-// =========================
-// SCROLL REVEAL
-// =========================
+    /* =====================================================
+       SCROLL REVEAL
+       ===================================================== */
 
-const revealElements = () => {
-  const reveals = document.querySelectorAll(".reveal");
+    const revealElements = document.querySelectorAll(
+        ".hero-content, .character-pair, .message-card, " +
+        ".decor-section, .character-section, .song-section, " +
+        ".fun-section, .letter, .final-section, .last-picture"
+    );
 
-  reveals.forEach((element) => {
-    const position = element.getBoundingClientRect().top;
+    revealElements.forEach(element => {
+        element.style.opacity = "0";
+        element.style.transform = "translateY(35px)";
+        element.style.transition =
+            "opacity 1s ease, transform 1s ease";
+    });
 
-    if (position < window.innerHeight - 80) {
-      element.classList.add("visible");
+
+    const revealObserver = new IntersectionObserver(
+        entries => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+
+                    revealObserver.unobserve(entry.target);
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.12
+        }
+    );
+
+
+    revealElements.forEach(element => {
+        revealObserver.observe(element);
+    });
+
+
+
+    /* =====================================================
+       MUSIC PLAYER
+       ===================================================== */
+
+    const song = document.getElementById("song");
+    const playBtn = document.getElementById("playBtn");
+
+    if (song && playBtn) {
+
+        playBtn.addEventListener("click", () => {
+
+            if (song.paused) {
+
+                song.play()
+                    .then(() => {
+                        playBtn.textContent = "Ⅱ";
+                    })
+                    .catch(() => {
+                        playBtn.textContent = "▶";
+                    });
+
+            } else {
+
+                song.pause();
+                playBtn.textContent = "▶";
+
+            }
+
+        });
+
+
+        song.addEventListener("ended", () => {
+            playBtn.textContent = "▶";
+        });
+
     }
-  });
-};
-
-window.addEventListener("scroll", revealElements);
 
 
-// =========================
-// SUPERHERO FRIENDSHIP
-// =========================
 
-const superheroSection =
-  document.querySelector(".superhero-section");
+    /* =====================================================
+       CHARACTER LITTLE FLOATING EFFECT
+       ===================================================== */
 
-const togetherButton =
-  document.getElementById("togetherButton");
+    const characters = document.querySelectorAll(".character");
 
-const togetherMessage =
-  document.getElementById("togetherMessage");
+    characters.forEach((character, index) => {
 
-togetherButton.addEventListener("click", () => {
+        character.addEventListener("mouseenter", () => {
 
-  superheroSection.classList.toggle("closer");
+            character.style.transform = "translateY(-15px) rotate(-2deg)";
 
-  if (superheroSection.classList.contains("closer")) {
+        });
 
-    togetherButton.textContent =
-      "Awww, they're together ♡";
+        character.addEventListener("mouseleave", () => {
 
-    togetherMessage.textContent =
-      "See? Everything is better when we're together. ♡";
+            character.style.transform = "";
 
-  } else {
+        });
 
-    togetherButton.textContent =
-      "Bring them closer ♡";
-
-    togetherMessage.textContent =
-      "they're better together anyway.";
-
-  }
-
-});
+    });
 
 
-// =========================
-// SONG PLAYER
-// =========================
 
-const song =
-  document.getElementById("friendSong");
+    /* =====================================================
+       DECORATIVE IMAGE HOVER
+       ===================================================== */
 
-const songButton =
-  document.getElementById("songButton");
+    const decorativeImages = document.querySelectorAll(
+        ".decor-section img, .last-picture img"
+    );
 
-songButton.addEventListener("click", async () => {
+    decorativeImages.forEach(image => {
 
-  try {
+        image.addEventListener("mouseenter", () => {
+            image.style.filter = "saturate(1.05) brightness(1.05)";
+        });
 
-    if (song.paused) {
+        image.addEventListener("mouseleave", () => {
+            image.style.filter = "";
+        });
 
-      await song.play();
+    });
 
-      songButton.textContent = "Ⅱ";
-      songButton.classList.add("playing");
 
-    } else {
 
-      song.pause();
+    /* =====================================================
+       PARALLAX EFFECT FOR DECORATIVE IMAGES
+       ===================================================== */
 
-      songButton.textContent = "▶";
-      songButton.classList.remove("playing");
+    window.addEventListener("scroll", () => {
+
+        const scrollPosition = window.scrollY;
+
+        decorativeImages.forEach((image, index) => {
+
+            const rect = image.getBoundingClientRect();
+
+            if (
+                rect.top < window.innerHeight &&
+                rect.bottom > 0
+            ) {
+
+                const movement =
+                    (window.innerHeight / 2 - rect.top) * 0.025;
+
+                image.style.translate =
+                    `0 ${movement}px`;
+
+            }
+
+        });
+
+    });
+
+
+
+    /* =====================================================
+       HEART BETWEEN CATS
+       ===================================================== */
+
+    const heart = document.querySelector(".heart-between");
+
+    if (heart) {
+
+        heart.addEventListener("mouseenter", () => {
+            heart.style.transform = "scale(1.3)";
+        });
+
+        heart.addEventListener("mouseleave", () => {
+            heart.style.transform = "";
+        });
 
     }
 
-  } catch (error) {
-
-    console.log("Song could not be played:", error);
-
-  }
-
-});
 
 
-song.addEventListener("ended", () => {
+    /* =====================================================
+       PREVENT BROKEN IMAGE LOOK
+       ===================================================== */
 
-  songButton.textContent = "▶";
+    const allImages = document.querySelectorAll("img");
 
-  songButton.classList.remove("playing");
+    allImages.forEach(image => {
 
-});
+        image.addEventListener("error", () => {
+
+            image.style.opacity = "0.2";
+            image.style.filter = "grayscale(1)";
+
+            console.warn(
+                "Image could not be loaded:",
+                image.getAttribute("src")
+            );
+
+        });
+
+    });
 
 
-// =========================
-// INITIAL REVEAL
-// =========================
 
-window.addEventListener("load", () => {
+    /* =====================================================
+       SMALL PAGE LOAD EFFECT
+       ===================================================== */
 
-  setTimeout(() => {
-    revealElements();
-  }, 300);
+    document.body.classList.add("page-loaded");
 
 });
